@@ -1,0 +1,27 @@
+name: 🎥 Auto Movie Blog
+
+on:
+  workflow_dispatch:
+    inputs:
+      movie:
+        description: 'Movie Name'
+        required: true
+        default: 'Oppenheimer'
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm install
+    - env:
+        MOVIE_NAME: ${{ github.event.inputs.movie }}
+        BLOGGER_EMAIL: ${{ secrets.BLOGGER_EMAIL }}
+        BLOGGER_APP_PASSWORD: ${{ secrets.BLOGGER_APP_PASSWORD }}
+        TMDB_KEY: ${{ secrets.TMDB_KEY }}
+        OMDB_KEY: ${{ secrets.OMDB_KEY }}
+        BLOG_ID: ${{ secrets.BLOG_ID }}
+      run: node generate-blog.js
